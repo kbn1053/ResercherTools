@@ -1,3 +1,5 @@
+//書籍情報をisbnを基にopenBDから取得
+
 function myFunction_bookdata() {
     
   //ISBNコードがある行の先頭

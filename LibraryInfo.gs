@@ -28,7 +28,7 @@ function myFunction_toshokan() {
   Logger.log("start");
   
   // カーリル 図書館APIに問い合わせ // todo 一括問い合わせ
-  var response = UrlFetchApp.fetch("http://api.calil.jp/library?appkey=" + myAPIkey + "&pref=" + prefname + "&city=" + cityname + "&format=json&callback=");
+  var response = UrlFetchApp.fetch("https://api.calil.jp/library?appkey=" + myAPIkey + "&pref=" + prefname + "&city=" + cityname + "&format=json&callback=");
 
   // APIの結果をパース
   var resultJson = JSON.parse(response.getContentText("UTF-8"));

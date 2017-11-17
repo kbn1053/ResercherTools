@@ -78,7 +78,7 @@ function callApi_resume(apikey,apiwait,retrycount,sessionid){
   Logger.log("call API");
   
   // カーリル 図書館APIに問い合わせ
-  var response = UrlFetchApp.fetch("http://api.calil.jp/check?appkey=" + apikey + "&session=" + sessionid + "&format=json&callback=no");
+  var response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + sessionid + "&format=json&callback=no");
 
   // APIの結果をパース
   var result = JSON.parse(response.getContentText("UTF-8"));
@@ -92,7 +92,7 @@ function callApi_resume(apikey,apiwait,retrycount,sessionid){
       Utilities.sleep(apiwait);
       
       // カーリル 図書館APIに問い合わせ(ポーリング)
-      var response = UrlFetchApp.fetch("http://api.calil.jp/check?appkey=" + apikey + "&session=" + result.session + "&format=json&callback=no");
+      var response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + result.session + "&format=json&callback=no");
       result = JSON.parse(response.getContentText("UTF-8"));
       
       if( result["continue"] == 0 ){

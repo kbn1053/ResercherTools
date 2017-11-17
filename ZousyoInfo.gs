@@ -147,7 +147,7 @@ function buildQueryUrl(myapikey,isbnlist_request,systemidlist){
   
   var isbn_str = isbnlist_request.join(",");
   
-  var temp_query = "http://api.calil.jp/check?appkey=" + myapikey + "&isbn=" + isbn_str + "&systemid=" + systemid_str + "&format=json&callback=no";
+  var temp_query = "https://api.calil.jp/check?appkey=" + myapikey + "&isbn=" + isbn_str + "&systemid=" + systemid_str + "&format=json&callback=no";
   
   Logger.log(temp_query);
   
@@ -177,7 +177,7 @@ function callApi(q,apikey,apiwait,retrycount,resumecell){
       Utilities.sleep(apiwait);
       
       // カーリル 図書館APIに問い合わせ(ポーリング)
-      var response = UrlFetchApp.fetch("http://api.calil.jp/check?appkey=" + apikey + "&session=" + result.session + "&format=json&callback=no");
+      var response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + result.session + "&format=json&callback=no");
       result = JSON.parse(response.getContentText("UTF-8"));
       
       resumerange.offset(0,0).setvalue(result.session);
