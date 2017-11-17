@@ -21,12 +21,12 @@ function myFunction_syozou_resume() {
   var writeCell ="L4";
   var calilUrlCell = "S4";
   
-  // 処理タイムアウト時間(240sec)
-  var apiTimeout = 240000;
-  // APIポーリング間隔:制約(2sec未満は禁止):余裕を見て5secでリトライ
-  var apiWait = 5000;
+  // 処理タイムアウト時間
+  var apiTimeout = ResercherTools.getScriptTimeout();
+  // APIポーリング間隔
+  var apiWait = ResercherTools.getCalilApiWait();
   //リトライ回数
-  var retryCount = apiTimeout / apiWait;
+  var retryCount = Math.floor(apiTimeout / apiWait);
   
   // シートから読みだしたisbn列(13桁正規化済み)
   var isbnList_all = new Array(); // 全体
@@ -77,27 +77,44 @@ function callApi_resume(apikey,apiwait,retrycount,sessionid){
   
   Logger.log("call API");
   
-  // カーリル 図書館APIに問い合わせ
-  var response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + sessionid + "&format=json&callback=no");
-
-  // APIの結果をパース
-  var result = JSON.parse(response.getContentText("UTF-8"));
+  //戻り値
+  var result = new Object();
   
-  if( result["continue"] == 1 )
-  {
-    for( var i=0;i<retrycount;i++){ 
-      Logger.log("Retry : " + (i+1) );
-      
-      //apiを呼び出す前に待つ
-      Utilities.sleep(apiwait);
-      
-      // カーリル 図書館APIに問い合わせ(ポーリング)
-      var response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + result.session + "&format=json&callback=no");
-      result = JSON.parse(response.getContentText("UTF-8"));
-      
-      if( result["continue"] == 0 ){
-        Logger.log("retry end");
-        break;
+  // カーリル 図書館APIに問い合わせ
+  var response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + sessionid + "&format=json&callback=no",{ muteHttpExceptions:true });
+  var responsecode = response.getResponseCode();
+  Logger.log("responsecode : " + responsecode);  
+  
+  if( responsecode == 200){
+
+    // APIの結果をパース
+    result = JSON.parse(response.getContentText("UTF-8"));
+    
+    if( result["continue"] == 1 )
+    {
+      for( var i=0;i<retrycount;i++){ 
+        Logger.log("Retry : " + (i+1) );
+        
+        //apiを呼び出す前に待つ
+        Utilities.sleep(apiwait);
+        
+        // カーリル 図書館APIに問い合わせ(ポーリング)
+        response = UrlFetchApp.fetch("https://api.calil.jp/check?appkey=" + apikey + "&session=" + result.session + "&format=json&callback=no",{ muteHttpExceptions:true });
+        responsecode = response.getResponseCode();
+        Logger.log("responsecode : " + responsecode);  
+        
+        if( responsecode != 200){
+          // サーバーがおかしいのでポーリング打ち切り。前回のポーリング結果を返す。
+          Logger.log("retry force end");
+          break;
+        }
+        
+        result = JSON.parse(response.getContentText("UTF-8"));
+        
+        if( result["continue"] == 0 ){
+          Logger.log("retry end");
+          break;
+        }
       }
     }
   }

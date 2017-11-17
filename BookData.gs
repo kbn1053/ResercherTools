@@ -31,7 +31,7 @@ function myFunction_bookdata() {
 
     //isbnは整形済みのため入力チェックなし
     
-    // OpenBD APIに問い合わせ
+    // OpenBD APIに問い合わせ //サーバーエラーミュートしない
     var response = UrlFetchApp.fetch("https://api.openbd.jp/v1/get?isbn=" + isbncode);
 
     // APIの結果をパース
