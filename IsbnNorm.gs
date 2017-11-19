@@ -2,6 +2,8 @@
 
 function myFunction_isbnfix() {
   
+  var isbn_all = [];
+  
   //ISBNコードがある行の先頭
   var targetCell = "F4"
   
@@ -46,7 +48,13 @@ function myFunction_isbnfix() {
       isbncode = ResercherTools.toIsbn13(isbncode);
     }
     
-    // ハイフンなし13桁のコードで書きこむ
-    range.offset(i,0).setValue(isbncode); 
+    //重複チェック
+    if(isbn_all.indexOf(isbncode) <0 )
+    {
+      // ハイフンなし13桁のコードで書きこむ
+      range.offset(i,0).setValue(isbncode); 
+    }else{
+      range.offset(i,1).setValue("ISBN CODE 重複してます");
+    }
   }  
 }

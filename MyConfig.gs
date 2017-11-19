@@ -24,7 +24,7 @@ function getCalilApiWait() {
   //Calilへの問い合わせ間隔
   //仕様上2sec以上開ける必要がある
   //違反すると、しばらくの間（1hour?)APIが500errorを返すようになる
-  var myApiWait = "6000";
+  var myApiWait = "10000";
   
   return myApiWait;
   
